@@ -48,5 +48,24 @@ namespace AspNetCorePublisherWebApi.Controllers
             _bookstoreRepository.Save();
             return CreatedAtRoute("GetPublisher", new { id = publisherToAdd.Id }, publisherToAdd);
         }
+
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, [FromBody] PublisherUpdateDTO publisher)
+        {
+            if (publisher == null) return BadRequest();
+            if (publisher.Established < 1534)
+            {
+                ModelState.AddModelError("Established", "The first publishing house was founded in 1534.");
+            }
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var publisherExists = _bookstoreRepository.PublisherExist(id);
+            if (!publisherExists)
+            {
+                return NotFound();
+            }
+
+            _bookstoreRepository.UpdatePublisher(id, publisher);
+            return NoContent();
+        }
     }
 }
