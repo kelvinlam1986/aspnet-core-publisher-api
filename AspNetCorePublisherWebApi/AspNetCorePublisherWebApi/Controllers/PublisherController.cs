@@ -1,4 +1,5 @@
-﻿using AspNetCorePublisherWebApi.Services;
+﻿using AspNetCorePublisherWebApi.Models;
+using AspNetCorePublisherWebApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AspNetCorePublisherWebApi.Controllers
@@ -26,6 +27,26 @@ namespace AspNetCorePublisherWebApi.Controllers
             var publisher = _bookstoreRepository.GetPublisher(id, includeBooks);
             if (publisher == null) return NotFound();
             return Ok(publisher);
+        }
+
+        [HttpPost]
+        public IActionResult Post([FromBody] PublisherCreateDTO publisher)
+        {
+            if (publisher == null) return BadRequest();
+            if (publisher.Established < 1534)
+            {
+                ModelState.AddModelError("Established", "The first publishing house was founded in 1534.");
+            }
+
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var publisherToAdd = new PublisherDTO
+            {
+                Name = publisher.Name,
+                Established = publisher.Established
+            };
+            _bookstoreRepository.AddPublisher(publisherToAdd);
+            _bookstoreRepository.Save();
+            return CreatedAtRoute("GetPublisher", new { id = publisherToAdd.Id }, publisherToAdd);
         }
     }
 }

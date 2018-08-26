@@ -22,5 +22,17 @@ namespace AspNetCorePublisherWebApi.Services
 
             return publisher;
         }
+
+        public void AddPublisher(PublisherDTO publisher)
+        {
+            var id = GetPublishers().Max(x => x.Id) + 1;
+            publisher.Id = id;
+            MockData.Current.Publishers.Add(publisher);
+        }
+
+        public bool Save()
+        {
+            return true;
+        }
     }
 }
