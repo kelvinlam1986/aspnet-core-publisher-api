@@ -10,6 +10,8 @@ namespace AspNetCorePublisherWebApi.Services
         void AddPublisher(PublisherDTO publisher);
         void UpdatePublisher(int id, PublisherUpdateDTO publisher);
         bool PublisherExist(int publisherId);
+        void DeleteBook(BookDTO book);
+        void DeletePublisher(PublisherDTO publisher);
         bool Save();
     }
 }

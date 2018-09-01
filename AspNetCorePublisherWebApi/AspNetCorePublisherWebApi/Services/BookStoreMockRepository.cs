@@ -46,5 +46,16 @@ namespace AspNetCorePublisherWebApi.Services
         {
             return MockData.Current.Publishers.Count(x => x.Id.Equals(publisherId)).Equals(1);
         }
+
+        public void DeleteBook(BookDTO book)
+        {
+            MockData.Current.Books.Remove(book);
+        }
+
+        public void DeletePublisher(PublisherDTO publisher)
+        {
+            MockData.Current.Books.RemoveAll(b => b.PublisherId.Equals(publisher.Id));
+            MockData.Current.Publishers.Remove(publisher);
+        }
     }
 }

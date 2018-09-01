@@ -1,5 +1,6 @@
 ﻿using AspNetCorePublisherWebApi.Models;
 using AspNetCorePublisherWebApi.Services;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AspNetCorePublisherWebApi.Controllers
@@ -66,6 +67,54 @@ namespace AspNetCorePublisherWebApi.Controllers
 
             _bookstoreRepository.UpdatePublisher(id, publisher);
             return NoContent();
+        }
+
+        [HttpPatch("{id}")]
+        public IActionResult Patch(int id, [FromBody]JsonPatchDocument<PublisherUpdateDTO> publisher)
+        {
+            if (publisher == null)
+            {
+                return BadRequest();
+            }
+
+            var publisherToUpdate = _bookstoreRepository.GetPublisher(id);
+            if (publisherToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            var publisherPatch = new PublisherUpdateDTO
+            {
+                Name = publisherToUpdate.Name,
+                Established = publisherToUpdate.Established
+            };
+
+            publisher.ApplyTo(publisherPatch, ModelState);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (publisherPatch.Established < 1543)
+            {
+                ModelState.AddModelError("Established", "The oldest publishing house was founded in 1534.");
+            }
+
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            _bookstoreRepository.UpdatePublisher(id, publisherPatch);
+            _bookstoreRepository.Save();
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var publisherToDelete = _bookstoreRepository.GetPublisher(id);
+            if (publisherToDelete == null) return NotFound();
+            _bookstoreRepository.DeletePublisher(publisherToDelete);
+            _bookstoreRepository.Save();
+            return NoContent();
+
         }
     }
 }
