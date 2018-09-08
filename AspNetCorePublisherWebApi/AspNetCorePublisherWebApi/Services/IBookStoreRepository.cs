@@ -15,6 +15,7 @@ namespace AspNetCorePublisherWebApi.Services
         IEnumerable<BookDTO> GetBooks(int publisherId);
         BookDTO GetBook(int publisherId, int bookId);
         void AddBook(BookDTO book);
+        void UpdateBook(int publisherId, int bookId, BookUpdateDTO book);
         bool Save();
     }
 }

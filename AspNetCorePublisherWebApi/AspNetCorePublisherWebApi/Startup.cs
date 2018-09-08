@@ -23,7 +23,7 @@ namespace AspNetCorePublisherWebApi
             }
 
             Configuration = builder.Build();
-
+            
         }
 
         public IConfiguration Configuration { get; set; }

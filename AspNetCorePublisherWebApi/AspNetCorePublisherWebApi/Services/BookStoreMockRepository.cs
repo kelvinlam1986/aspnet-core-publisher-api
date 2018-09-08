@@ -75,5 +75,11 @@ namespace AspNetCorePublisherWebApi.Services
             book.Id = bookId;
             MockData.Current.Books.Add(book);
         }
+
+        public void UpdateBook(int publisherId, int bookId, BookUpdateDTO book)
+        {
+            var bookToUpdate = GetBook(publisherId, bookId);
+            bookToUpdate.Title = book.Title;
+        }
     }
 }

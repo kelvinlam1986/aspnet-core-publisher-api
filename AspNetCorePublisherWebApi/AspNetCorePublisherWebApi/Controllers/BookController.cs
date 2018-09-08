@@ -46,5 +46,17 @@ namespace AspNetCorePublisherWebApi.Controllers
             _bookStoreRepository.AddBook(bookToAdd);
             return CreatedAtRoute("GetBook", new {  publisherId, id = bookToAdd.Id }, bookToAdd);
         }
+
+        [HttpPut("{publisherId}/books/{id}")]
+        public IActionResult Put(int publisherId, int id, [FromBody] BookUpdateDTO book)
+        {
+            if (book == null) return BadRequest();
+            if (!ModelState.IsValid) return BadRequest();
+            var bookToUpdate = _bookStoreRepository.GetBook(publisherId, id);
+            if (bookToUpdate == null) return NotFound();
+            _bookStoreRepository.UpdateBook(publisherId, id, book);
+            _bookStoreRepository.Save();
+            return NoContent();
+        }
     }
 }
