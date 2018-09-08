@@ -1,5 +1,6 @@
 ﻿using AspNetCorePublisherWebApi.Models;
 using AspNetCorePublisherWebApi.Services;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AspNetCorePublisherWebApi.Controllers
@@ -51,10 +52,30 @@ namespace AspNetCorePublisherWebApi.Controllers
         public IActionResult Put(int publisherId, int id, [FromBody] BookUpdateDTO book)
         {
             if (book == null) return BadRequest();
-            if (!ModelState.IsValid) return BadRequest();
+            if (!ModelState.IsValid) return BadRequest(ModelState);
             var bookToUpdate = _bookStoreRepository.GetBook(publisherId, id);
             if (bookToUpdate == null) return NotFound();
             _bookStoreRepository.UpdateBook(publisherId, id, book);
+            _bookStoreRepository.Save();
+            return NoContent();
+        }
+
+        [HttpPatch("{publisherId}/books/{id}")]
+        public IActionResult Patch(int publisherId, int id, [FromBody]JsonPatchDocument<BookUpdateDTO> book)
+        {
+            if (book == null) return BadRequest();
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var bookToUpdate = _bookStoreRepository.GetBook(publisherId, id);
+            if (bookToUpdate == null) return NotFound();
+            var bookToPatch = new BookUpdateDTO
+            {
+                PublisherId = bookToUpdate.PublisherId,
+                Title = bookToUpdate.Title
+            };
+
+            book.ApplyTo(bookToPatch, ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            _bookStoreRepository.UpdateBook(publisherId, id, bookToPatch);
             _bookStoreRepository.Save();
             return NoContent();
         }
