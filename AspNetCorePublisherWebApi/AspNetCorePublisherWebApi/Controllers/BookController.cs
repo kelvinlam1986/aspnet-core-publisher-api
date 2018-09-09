@@ -79,5 +79,15 @@ namespace AspNetCorePublisherWebApi.Controllers
             _bookStoreRepository.Save();
             return NoContent();
         }
+
+        [HttpDelete("{publisherId}/books/{id}")]
+        public IActionResult Delete(int publisherId, int id)
+        {
+            var book = _bookStoreRepository.GetBook(publisherId, id);
+            if (book == null) return NotFound();
+            _bookStoreRepository.DeleteBook(book);
+            _bookStoreRepository.Save();
+            return NoContent();
+        }
     }
 }
