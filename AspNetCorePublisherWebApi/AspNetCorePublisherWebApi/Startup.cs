@@ -1,7 +1,9 @@
-﻿using AspNetCorePublisherWebApi.Services;
+﻿using AspNetCorePublisherWebApi.Entities;
+using AspNetCorePublisherWebApi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -15,7 +17,7 @@ namespace AspNetCorePublisherWebApi
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json");
+                .AddJsonFile("appsettings.json", optional: true);
 
             if (env.IsDevelopment())
             {
@@ -33,6 +35,9 @@ namespace AspNetCorePublisherWebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            var connectionString = Configuration["connectionStrings:sqlConnection"];
+            services.AddDbContext<SqlDbContext>(options => options.UseSqlServer(connectionString));
             services.AddScoped<IBookStoreRepository, BookStoreMockRepository>();
         }
 
