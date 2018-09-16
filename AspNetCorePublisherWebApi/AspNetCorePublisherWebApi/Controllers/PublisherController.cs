@@ -66,6 +66,7 @@ namespace AspNetCorePublisherWebApi.Controllers
             }
 
             _bookstoreRepository.UpdatePublisher(id, publisher);
+            _bookstoreRepository.Save();
             return NoContent();
         }
 

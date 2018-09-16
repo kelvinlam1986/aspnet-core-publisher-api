@@ -38,7 +38,15 @@ namespace AspNetCorePublisherWebApi
 
             var connectionString = Configuration["connectionStrings:sqlConnection"];
             services.AddDbContext<SqlDbContext>(options => options.UseSqlServer(connectionString));
-            services.AddScoped<IBookStoreRepository, BookStoreMockRepository>();
+            AutoMapper.Mapper.Initialize(config =>
+            {
+                config.CreateMap<Book, Models.BookDTO>();
+                config.CreateMap<Models.BookDTO, Book>();
+                config.CreateMap<Publisher, Models.PublisherDTO>();
+                config.CreateMap<Models.PublisherDTO, Publisher>();
+            });
+
+            services.AddScoped<IBookStoreRepository, BookstoreSqlRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -45,6 +45,7 @@ namespace AspNetCorePublisherWebApi.Controllers
             };
 
             _bookStoreRepository.AddBook(bookToAdd);
+            _bookStoreRepository.Save();
             return CreatedAtRoute("GetBook", new {  publisherId, id = bookToAdd.Id }, bookToAdd);
         }
 
