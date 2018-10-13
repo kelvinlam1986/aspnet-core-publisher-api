@@ -44,9 +44,14 @@ namespace AspNetCorePublisherWebApi
                 config.CreateMap<Models.BookDTO, Book>();
                 config.CreateMap<Publisher, Models.PublisherDTO>();
                 config.CreateMap<Models.PublisherDTO, Publisher>();
+                config.CreateMap<Publisher, Models.PublisherUpdateDTO>();
+                config.CreateMap<Models.PublisherUpdateDTO, Publisher>();
+                config.CreateMap<Book, Models.BookUpdateDTO>();
+                config.CreateMap<Models.BookUpdateDTO, Book>();
             });
 
             services.AddScoped<IBookStoreRepository, BookstoreSqlRepository>();
+            services.AddScoped<IGenericEFRepository, GenericEFRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
